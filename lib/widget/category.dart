@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_5/app_color.dart';
+import 'package:flutter_application_5/core/app_color.dart';
 
 class Ctegores extends StatefulWidget {
   const Ctegores({super.key});

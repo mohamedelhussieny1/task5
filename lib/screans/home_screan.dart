@@ -1,6 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_5/app_color.dart';
-import 'package:flutter_application_5/image.dart';
+import 'package:flutter_application_5/core/app_color.dart';
+import 'package:flutter_application_5/core/app_local_storage.dart';
 import 'package:flutter_application_5/widget/category.dart';
 import 'package:flutter_application_5/widget/paige_view.dart';
 
@@ -31,20 +32,40 @@ class _HomeScreanState extends State<HomeScrean> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Hello Mohamed',
-                          style:
-                              TextStyle(color: AppColors.white, fontSize: 19)),
+                      FutureBuilder(
+                        future: AppLocal.getCashed(AppLocal.nameKey),
+                        builder: (context, snapshot) {
+                          return Text(
+                            'Hello ${snapshot.data!.split(' ').first}',
+                            style: TextStyle(
+                              color: AppColors.white,
+                              fontSize: 19,
+                            ),
+                          );
+                        },
+                      ),
                       Text(
                         'Have a nice day',
                         style: TextStyle(color: AppColors.grey, fontSize: 13),
                       )
                     ],
                   ),
-                  CircleAvatar(
-                    radius: 30,
-                    backgroundColor: AppColors.grey,
-                    child: Icon(Icons.person, color: AppColors.white),
+                  FutureBuilder(
+                    future: AppLocal.getCashed(AppLocal.imageKey),
+                    builder: (context, snapshot) {
+                      if(snapshot.hasData){
+                       return CircleAvatar(
+                          radius: 30,
+                          backgroundColor: AppColors.grey,
+                          backgroundImage: FileImage(File(snapshot.data!)),
+                        );
+                      }else{
+                        return CircleAvatar(backgroundColor: Colors.white,radius: 30,);
+                      }
+                    },
                   ),
+
+
                 ],
               ),
               SizedBox(

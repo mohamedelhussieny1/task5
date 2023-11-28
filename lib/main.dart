@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_5/app_color.dart';
+import 'package:flutter_application_5/core/app_color.dart';
 import 'package:flutter_application_5/image.dart';
-import 'package:flutter_application_5/splash_view.dart';
+import 'package:flutter_application_5/screans/splash_view.dart';
 
 void main() {
   runApp(const MyApp());

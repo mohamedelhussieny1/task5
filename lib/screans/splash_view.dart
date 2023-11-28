@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_5/app_color.dart';
+import 'package:flutter_application_5/core/app_color.dart';
+import 'package:flutter_application_5/core/app_local_storage.dart';
+import 'package:flutter_application_5/home_view.dart';
 import 'package:flutter_application_5/image.dart';
-import 'package:flutter_application_5/login.dart';
+import 'package:flutter_application_5/auth/login.dart';
+import 'package:flutter_application_5/screans/home_screan.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
@@ -18,11 +21,11 @@ class _SplashViewState extends State<SplashView> {
         seconds: 5,
       ),
       () {
-        Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) {
-            return Login();
-          },
-        ));
+        AppLocal.getBool(AppLocal.isupload).then((value) {
+          Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (context) => value ? HomeView() : Login(),
+          ));
+        });
       },
     );
 

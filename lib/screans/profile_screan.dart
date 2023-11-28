@@ -1,8 +1,26 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_application_5/app_color.dart';
+import 'dart:io';
 
-class ProfileScrean extends StatelessWidget {
+import 'package:flutter/material.dart';
+import 'package:flutter_application_5/auth/login.dart';
+import 'package:flutter_application_5/core/app_color.dart';
+import 'package:flutter_application_5/core/app_local_storage.dart';
+import 'package:image_picker/image_picker.dart';
+String? imagePath;
+String? name;
+class ProfileScrean extends StatefulWidget {
   const ProfileScrean({super.key});
+
+  @override
+  State<ProfileScrean> createState() => _ProfileScreanState();
+}
+
+class _ProfileScreanState extends State<ProfileScrean> {
+  var textCon = TextEditingController();
+  @override
+  void initState() {
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -10,21 +28,87 @@ class ProfileScrean extends StatelessWidget {
       backgroundColor: AppColors.sacffoldBG,
       body: Center(
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Stack(
-            children: [
-              CircleAvatar(
-                radius: 90,
-                backgroundColor: AppColors.grey,
-                child: Icon(Icons.person_2_outlined,
-                    color: AppColors.sacffoldBG, size: 100),
-              ),
-              Positioned(
-                  right: 0,
-                  bottom: 0,
-                  child: CircleAvatar(
-                    child: Icon(Icons.camera_alt),
-                  )),
-            ],
+          FutureBuilder(
+            future: AppLocal.getCashed(AppLocal.imageKey),
+            builder: (context, snapshot) {
+              return Stack(
+                children: [
+                  CircleAvatar(
+                    radius: 90,
+                    backgroundColor: AppColors.grey,
+                    backgroundImage: FileImage(File(snapshot.data!)),
+                  ),
+                  Positioned(
+                      right: 0,
+                      bottom: 0,
+                      child: GestureDetector(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return SimpleDialog(
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 15,
+                                  vertical: 15,
+                                ),
+                                children: [
+                                  GestureDetector(
+                                    onTap: () async {
+                                      await getImageFromCamera().then((value) {
+                                        Navigator.of(context).pop();
+                                      });
+                                    },
+                                    child: Container(
+                                      height: 40,
+                                      width: 200,
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                          color: AppColors.grey),
+                                      child: Text(
+                                        'Ubload From Camera',
+                                        style: TextStyle(
+                                          color: AppColors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(height: 15,),
+                                  GestureDetector(
+                                    onTap: () async {
+                                      await getImageFromGalarey().then((value) {
+                                        Navigator.of(context).pop();
+                                      });
+                                    },
+                                    child: Container(
+                                      height: 40,
+                                      width: 200,
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                          BorderRadius.circular(15),
+                                          color: AppColors.grey),
+                                      child: Text(
+                                        'Ubload From Gallery',
+                                        style: TextStyle(
+                                          color: AppColors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        child: CircleAvatar(
+                          child: Icon(Icons.camera_alt),
+                        ),
+                      )),
+                ],
+              );
+            },
           ),
           SizedBox(
             height: 40,
@@ -37,7 +121,9 @@ class ProfileScrean extends StatelessWidget {
           SizedBox(
             height: 40,
           ),
-          Container(
+          GestureDetector(onTap: () {
+            textCon.text;
+          },child: Container(
             padding: EdgeInsets.all(15),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20), color: AppColors.grey),
@@ -51,9 +137,31 @@ class ProfileScrean extends StatelessWidget {
                   fontSize: 19,
                   fontWeight: FontWeight.bold),
             ),
-          )
+          ),)
         ]),
       ),
     );
   }
+
+  Future getImageFromCamera() async {
+    final imagePicker =
+        await ImagePicker().pickImage(source: ImageSource.camera);
+    if (imagePicker != null) {
+      AppLocal.cashData(AppLocal.imageKey, name!);
+      setState(() {
+        imagePath = imagePicker.path;
+      });
+    }
+  }
+ Future getImageFromGalarey() async {
+    final imagePicker =
+    await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (imagePicker != null) {
+      AppLocal.cashData(AppLocal.imageKey,name!);
+      setState(() {
+        imagePath = imagePicker.path;
+      });
+    }
+  }
+
 }
